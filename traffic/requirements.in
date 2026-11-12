@@ -1,0 +1,4 @@
+# Inputs for the traffic generator image (compile with deploy/scripts/lock.sh).
+httpx
+boto3                   # only needed when the target URL comes from SSM (TARGET_URL_PARAM, the EKS deployment)
+urllib3>=2.8.0          # CVE floor, see services/requirements.in

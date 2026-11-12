@@ -1,0 +1,12 @@
+# Inputs for the NeonByte microservice images. Compile with deploy/scripts/lock.sh — the images
+# install the hash-pinned requirements.txt, never these ranges.
+# OpenTelemetry is NOT listed: the ADOT Python auto-instrumentation is injected at runtime
+# (EKS operator / compose init container), like the reference demo.
+fastapi>=0.120
+starlette>=1.3.1        # CVE-2025-62727, CVE-2026-48818, CVE-2026-54283, CVE-2026-48710, CVE-2026-48817, CVE-2026-54282
+uvicorn
+httpx
+boto3
+jinja2
+pydantic>=2.9,<3
+urllib3>=2.8.0          # CVE-2025-66418/66471, CVE-2026-21441/44431/97687/97689, CVE-2025-50181

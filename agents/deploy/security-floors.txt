@@ -1,0 +1,14 @@
+# Minimum versions with known CVE fixes, applied as constraints to every agent lock
+# (deploy/scripts/lock.sh). Raise a floor when a scanner reports a fixed release; see SECURITY.md.
+filelock>=4.2.1                        # GHSA-v4x8-3wr5-3wq8 (+12 lower)
+litellm>=1.96.2                        # CVE-2026-49468, -37004, -42208 (critical) and 13 more
+mcp>=1.30.0,!=2.0.*,!=2.1.*            # CVE-2026-116684/-116685/-116686, CVE-2026-59951
+oauthlib>=4.0.1                        # CVE-2026-49272
+opentelemetry-api>=1.45.1              # CVE-2026-114603
+opentelemetry-sdk>=1.45.1
+opentelemetry-propagator-jaeger>=1.45.0  # CVE-2026-116694
+pillow>=13.0.0                         # 41 CVEs incl. CVE-2026-112393, -112398 (critical)
+uv>=0.13.4                             # GHSA-hq85-5cpj-mr62
+urllib3>=2.8.0
+starlette>=1.3.1
+# chromadb: no fixed release yet (accepted risk, SECURITY.md)

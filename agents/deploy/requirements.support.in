@@ -1,0 +1,11 @@
+# Support runtime (LlamaIndex on Bedrock Converse).
+llama-index-core
+llama-index-llms-bedrock-converse
+boto3
+httpx
+python-dotenv
+bedrock-agentcore
+aws-opentelemetry-distro>=0.18.0
+
+# CVE floors shared by all agents
+-c security-floors.txt

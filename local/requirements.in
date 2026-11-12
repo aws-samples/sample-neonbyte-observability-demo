@@ -1,0 +1,8 @@
+# Everything needed to run the NeonByte agents (and, optionally, the store) on any machine.
+# Inputs only: local/setup.sh, setup.ps1 and local/Dockerfile install the compiled, hash-pinned
+# local/requirements.txt (deploy/scripts/lock.sh).
+-r ../agents/requirements.in
+
+# Microservices — loaded in-process by agents when NEONBYTE_BACKEND=embedded,
+# or run as servers by local/run-local.sh.
+-r ../services/requirements.in

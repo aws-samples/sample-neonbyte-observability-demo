@@ -1,0 +1,10 @@
+# Order Desk runtime (CrewAI -> Bedrock via LiteLLM).
+crewai
+boto3
+httpx
+python-dotenv
+bedrock-agentcore
+aws-opentelemetry-distro>=0.18.0
+
+# CVE floors shared by all agents
+-c security-floors.txt
