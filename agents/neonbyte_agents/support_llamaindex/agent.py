@@ -1,7 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-"""Customer Support sub-agent — LlamaIndex FunctionAgent on Bedrock Llama 4 Maverick."""
+"""Customer Support sub-agent — LlamaIndex FunctionAgent on Bedrock DeepSeek V3.2."""
 
 from __future__ import annotations
 

@@ -46,7 +46,30 @@ def checkout(user_id: str) -> str:
     return json.dumps(store.checkout(user_id))
 
 
-_llm = LLM(model=models.litellm_model("orderdesk"))
+def _local_token_counting(llm):
+    """Make CrewAI estimate prompt sizes locally instead of calling Bedrock ``CountTokens``.
+
+    CrewAI's Bedrock provider preflights requests with CountTokens. Nova 2 Lite does not support it
+    (ValidationException), and through a cross-Region inference profile the call can land in a Region
+    an organization SCP denies (AccessDeniedException). CrewAI already falls back to its local
+    estimate on either error, so skipping the call removes noisy failed spans without changing behavior.
+    """
+    try:
+        from crewai.llms.base_llm import BaseLLM
+        from crewai.llms.providers.bedrock.completion import BedrockCompletion
+    except ImportError:  # other CrewAI versions/providers: leave as is
+        return llm
+    if isinstance(llm, BedrockCompletion):
+
+        class _LocalTokenCountBedrock(type(llm)):
+            def get_input_tokens_count(self, messages, tools=None, response_model=None):
+                return BaseLLM.get_input_tokens_count(self, messages, tools, response_model)
+
+        llm.__class__ = _LocalTokenCountBedrock
+    return llm
+
+
+_llm = _local_token_counting(LLM(model=models.litellm_model("orderdesk")))
 
 
 def run(query: str, user_id: str | None = None, session_id: str | None = None) -> str:
