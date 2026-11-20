@@ -33,7 +33,7 @@ flowchart LR
     orch[Orchestrator<br/>Strands · Claude Sonnet 4.6] -->|SigV4| gw[AgentCore Gateway]
     gw --> adv[Product Advisor<br/>LangGraph · Claude Sonnet 4.6]
     gw --> od[Order Desk<br/>CrewAI · Nova 2 Lite]
-    gw --> sup[Customer Support<br/>LlamaIndex · Llama 4 Maverick]
+    gw --> sup[Customer Support<br/>LlamaIndex · DeepSeek V3.2]
     gw --> con[Concierge<br/>OpenAI Agents SDK · gpt-oss-120b]
     orch -.-> mem[(AgentCore Memory)]
   end
@@ -50,7 +50,7 @@ Same frameworks, models and Bedrock access as the reference Waggle agents (`agen
 | `orchestrator_strands` ("Sparky") | Strands Agents | Claude Sonnet 4.6 | `BedrockModel` (boto3) + Guardrail | Routes each request; chains specialists |
 | `product_advisor_langgraph` | LangGraph | Claude Sonnet 4.6 | `ChatBedrockConverse` + Guardrail | Recommends/compares products, buying guides |
 | `order_desk_crewai` | CrewAI | Amazon Nova 2 Lite | CrewAI Bedrock LLM | Cart add/remove/view, checkout |
-| `support_llamaindex` | LlamaIndex | Llama 4 Maverick | `BedrockConverse` | Order status, returns, warranty, troubleshooting |
+| `support_llamaindex` | LlamaIndex | DeepSeek V3.2 | `BedrockConverse` | Order status, returns, warranty, troubleshooting |
 | `concierge_openai` | OpenAI Agents SDK | gpt-oss-120b | `LitellmModel` → Bedrock | Tech Q&A, store info, small talk |
 
 All auth is the standard AWS credential chain (**SigV4**) — no API keys anywhere. Agent-to-agent calls
@@ -217,7 +217,7 @@ Key parameters (`--param Key=Value` with `deploy.sh`):
 | --- | --- | --- |
 | `LoadGenDesiredCount` / `LoadGenUsers` | 1 / 5 | traffic generator pods × simulated shoppers (0 = off) |
 | `LoadGenChatProbability` | 0.05 | chance per journey of an assistant chat — **the main Bedrock cost driver** |
-| `ClaudeModelId`, `NovaLiteModelId`, `LlamaModelId`, `GptOssModelId` | `us.` inference profiles | use `eu.`/`apac.` profiles outside the US |
+| `ClaudeModelId`, `NovaLiteModelId`, `SupportModelId`, `GptOssModelId` | `us.` profiles for Claude/Nova; in-Region `deepseek.v3.2` and `openai.gpt-oss-120b-1:0` | use `eu.`/`apac.` profiles outside the US; models must be ACTIVE (not Legacy) in Bedrock |
 | `AvailabilityZoneId1/2` | per-region map | AZ **IDs** supported by AgentCore VPC mode (e.g. `use1-az1`, `use1-az2`) |
 | `EnableTransactionSearch` / `EnableApplicationSignalsDiscovery` | true | set **false** if already enabled in the account/region |
 | `EnableGuardrail` | true | Bedrock Guardrail on the Claude-backed agents |
@@ -231,7 +231,7 @@ Key parameters (`--param Key=Value` with `deploy.sh`):
 
 Enable these in the Bedrock console (Model access) for your region, with the cross-region inference
 profiles for the `us.` ids: **Claude Sonnet 4.6** (Anthropic requires a one-time use-case form),
-**Amazon Nova 2 Lite**, **Llama 4 Maverick 17B Instruct**, **gpt-oss-120b**. The agents' IAM role
+**Amazon Nova 2 Lite**, **DeepSeek V3.2**, **gpt-oss-120b**. The agents' IAM role
 includes the Marketplace subscribe permissions that some first invocations need.
 
 ### Security notes

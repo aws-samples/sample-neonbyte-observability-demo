@@ -14,7 +14,7 @@ Metadata:
       - Label: { default: Networking }
         Parameters: [AvailabilityZoneId1, AvailabilityZoneId2, VpcCidr, KubernetesVersion]
       - Label: { default: Models (Amazon Bedrock) }
-        Parameters: [ClaudeModelId, NovaLiteModelId, LlamaModelId, GptOssModelId, EnableGuardrail]
+        Parameters: [ClaudeModelId, NovaLiteModelId, SupportModelId, GptOssModelId, EnableGuardrail]
       - Label: { default: Observability }
         Parameters: [EnableTransactionSearch, EnableApplicationSignalsDiscovery, LogRetentionDays, AlarmEmail]
       - Label: { default: Capacity and traffic }
@@ -64,10 +64,10 @@ Parameters:
     Type: String
     Default: us.amazon.nova-2-lite-v1:0
     Description: Order Desk (CrewAI) model.
-  LlamaModelId:
+  SupportModelId:
     Type: String
-    Default: us.meta.llama4-maverick-17b-instruct-v1:0
-    Description: Customer Support (LlamaIndex) model.
+    Default: deepseek.v3.2
+    Description: Customer Support (LlamaIndex) model. Must be ACTIVE in Bedrock (Meta Llama models are now Legacy).
   GptOssModelId:
     Type: String
     Default: openai.gpt-oss-120b-1:0
@@ -1073,11 +1073,11 @@ Resources:
             Resource:
               - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${ClaudeModelId}
               - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${NovaLiteModelId}
-              - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${LlamaModelId}
+              - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${SupportModelId}
               - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${GptOssModelId}
               - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/${ClaudeModelId}
               - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/${NovaLiteModelId}
-              - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/${LlamaModelId}
+              - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/${SupportModelId}
               - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/${GptOssModelId}
           - Effect: Allow
             Action: [bedrock:InvokeModel, bedrock:InvokeModelWithResponseStream, bedrock:CountTokens]
@@ -1087,7 +1087,7 @@ Resources:
                 bedrock:InferenceProfileArn:
                   - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${ClaudeModelId}
                   - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${NovaLiteModelId}
-                  - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${LlamaModelId}
+                  - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${SupportModelId}
                   - !Sub arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${GptOssModelId}
           - Effect: Allow
             Action: bedrock:ApplyGuardrail
@@ -1176,7 +1176,7 @@ Resources:
             GUARDRAIL_VERSION: !If [GuardrailOn, !GetAtt Guardrail.Version, ""]
             BEDROCK_CLAUDE_MODEL_ID: !Ref ClaudeModelId
             BEDROCK_NOVA_LITE_MODEL_ID: !Ref NovaLiteModelId
-            BEDROCK_LLAMA_MODEL_ID: !Ref LlamaModelId
+            BEDROCK_SUPPORT_MODEL_ID: !Ref SupportModelId
             BEDROCK_GPT_OSS_MODEL_ID: !Ref GptOssModelId
             # AgentCore observability: ADOT exports spans/logs straight to CloudWatch (no collector)
             OTEL_PYTHON_EXCLUDED_URLS: /ping
